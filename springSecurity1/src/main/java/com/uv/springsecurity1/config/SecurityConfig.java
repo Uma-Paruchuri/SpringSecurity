@@ -27,7 +27,7 @@ public class SecurityConfig {
         http.httpBasic(hbc -> hbc.disable());
         */
 
-        http.sessionManagement(smc -> smc.invalidSessionUrl("/invalidSession")) //in actual env we need a html ui with all details here this ui is dummy
+        http.sessionManagement(smc -> smc.invalidSessionUrl("/invalidSession").maximumSessions(3).maxSessionsPreventsLogin(true)) //in actual env we need a html ui with all details here this ui is dummy
                 .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
                 .csrf(csrfConfig -> csrfConfig.disable())
                 .authorizeHttpRequests((requests) -> requests.requestMatchers("/myAccounts","myCards").authenticated()
