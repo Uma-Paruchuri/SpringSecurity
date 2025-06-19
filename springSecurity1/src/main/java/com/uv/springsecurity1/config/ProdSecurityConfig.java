@@ -21,11 +21,12 @@ public class ProdSecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception{
 
-        http.requiresChannel(rcc -> rcc.anyRequest().requiresSecure())
+        http.sessionManagement(smc -> smc.invalidSessionUrl("/invalidSession"))
+                .requiresChannel(rcc -> rcc.anyRequest().requiresSecure())
                         .csrf(csrfConfig -> csrfConfig.disable())
                         .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/myAccounts","myCards").authenticated()
-                        .requestMatchers("/notices","/error","/register").permitAll());
+                        .requestMatchers("/notices","/error","/register","/invalidSession").permitAll());
         http.formLogin(withDefaults())
                 .httpBasic(hbc -> hbc.authenticationEntryPoint(new customBasicAuthenticationEntryPoint()));
         http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));

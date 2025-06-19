@@ -27,10 +27,11 @@ public class SecurityConfig {
         http.httpBasic(hbc -> hbc.disable());
         */
 
-        http.requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
+        http.sessionManagement(smc -> smc.invalidSessionUrl("/invalidSession")) //in actual env we need a html ui with all details here this ui is dummy
+                .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
                 .csrf(csrfConfig -> csrfConfig.disable())
                 .authorizeHttpRequests((requests) -> requests.requestMatchers("/myAccounts","myCards").authenticated()
-                .requestMatchers("/notices","/error","/register").permitAll());
+                .requestMatchers("/notices","/error","/register","/invalidSession").permitAll());
         http.formLogin(withDefaults());
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new customBasicAuthenticationEntryPoint())); //considered only during login flow
         //http.exceptionHandling(ehc -> ehc.authenticationEntryPoint(new customBasicAuthenticationEntryPoint())); //It is a Global config (considered for during execution as well)
