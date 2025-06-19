@@ -13,44 +13,22 @@ import org.springframework.security.web.authentication.password.HaveIBeenPwnedRe
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@Profile("!prod")
-public class SecurityConfig {
+@Profile("prod")
+public class ProdSecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception{
-        //http.authorizeHttpRequests((requests) -> requests.anyRequest().denyAll());
 
-        /*
-         http.formLogin(httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer.disable());
-        http.httpBasic(hbc -> hbc.disable());
-        */
-
-        http.requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
-                .csrf(csrfConfig -> csrfConfig.disable())
-                .authorizeHttpRequests((requests) -> requests.requestMatchers("/myAccounts","myCards").authenticated()
-                .requestMatchers("/notices","/error","/register").permitAll());
+        http.requiresChannel(rcc -> rcc.anyRequest().requiresSecure())
+                        .csrf(csrfConfig -> csrfConfig.disable())
+                        .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/myAccounts","myCards").authenticated()
+                        .requestMatchers("/notices","/error","/register").permitAll());
         http.formLogin(withDefaults())
                 .httpBasic(withDefaults());
 
         return http.build();
     }
-
-    /*  Inmemory Impl
-    @Bean
-    public UserDetailsService userDetailsService(){
-        UserDetails user = User.withUsername("user").password("{noop}Kil234@1").authorities("read").build();
-        UserDetails admin = User.withUsername("admin")
-                .password("{bcrypt}$2a$12$uKuzBLMct9qKJTA/BVFa2untCIZW5jjWmG1jYUJy8Xot82EIvThqq")
-                .authorities("admin").build();
-        return new InMemoryUserDetailsManager(user,admin);
-    }*/
-
-
-    /*  JDBC Impl
-    @Bean
-    public UserDetailsService userDetailsService(DataSource dataSource){
-        return new JdbcUserDetailsManager(dataSource);
-    }*/
 
     @Bean
     public PasswordEncoder passwordEncoder(){
