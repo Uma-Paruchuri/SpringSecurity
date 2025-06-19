@@ -1,5 +1,6 @@
 package com.uv.springsecurity1.config;
 
+import com.uv.springsecurity1.exceptionHandling.CustomAccessDeniedHandler;
 import com.uv.springsecurity1.exceptionHandling.customBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +28,7 @@ public class ProdSecurityConfig {
                         .requestMatchers("/notices","/error","/register").permitAll());
         http.formLogin(withDefaults())
                 .httpBasic(hbc -> hbc.authenticationEntryPoint(new customBasicAuthenticationEntryPoint()));
-
+        http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
         return http.build();
     }
 
