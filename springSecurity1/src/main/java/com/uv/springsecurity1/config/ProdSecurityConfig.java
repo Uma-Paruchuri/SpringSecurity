@@ -1,5 +1,6 @@
 package com.uv.springsecurity1.config;
 
+import com.uv.springsecurity1.exceptionHandling.customBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -25,7 +26,7 @@ public class ProdSecurityConfig {
                         .requestMatchers("/myAccounts","myCards").authenticated()
                         .requestMatchers("/notices","/error","/register").permitAll());
         http.formLogin(withDefaults())
-                .httpBasic(withDefaults());
+                .httpBasic(hbc -> hbc.authenticationEntryPoint(new customBasicAuthenticationEntryPoint()));
 
         return http.build();
     }

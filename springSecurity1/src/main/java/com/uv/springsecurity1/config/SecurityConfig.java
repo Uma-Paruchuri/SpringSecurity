@@ -1,5 +1,6 @@
 package com.uv.springsecurity1.config;
 
+import com.uv.springsecurity1.exceptionHandling.customBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -29,9 +30,9 @@ public class SecurityConfig {
                 .csrf(csrfConfig -> csrfConfig.disable())
                 .authorizeHttpRequests((requests) -> requests.requestMatchers("/myAccounts","myCards").authenticated()
                 .requestMatchers("/notices","/error","/register").permitAll());
-        http.formLogin(withDefaults())
-                .httpBasic(withDefaults());
-
+        http.formLogin(withDefaults());
+        http.httpBasic(hbc -> hbc.authenticationEntryPoint(new customBasicAuthenticationEntryPoint())); //considered only during login flow
+        //http.exceptionHandling(ehc -> ehc.authenticationEntryPoint(new customBasicAuthenticationEntryPoint())); //It is a Global config (considered for during execution as well)
         return http.build();
     }
 
